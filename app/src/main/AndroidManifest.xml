@@ -25,7 +25,12 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
+
         </activity>
+
+        <meta-data
+            android:name = "keyValue"
+            android:value = "${KEY}"/>
     </application>
 
 </manifest>

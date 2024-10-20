@@ -1,6 +1,9 @@
 package com.example.weatherapplication
 
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -15,6 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var key: String
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
@@ -22,6 +26,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+        val ai: ApplicationInfo = applicationContext.packageManager
+            .getApplicationInfo(applicationContext.packageName, PackageManager.GET_META_DATA)
+        val value = ai.metaData["keyValue"]
+
+        key = value.toString()
+        Toast.makeText(applicationContext,key,Toast.LENGTH_LONG).show()
 
         fetchWeatherData("indore")
         searchCity()
@@ -51,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         .baseUrl("https://api.openweathermap.org/data/2.5/")
             .build().create(ApiInterface::class.java)
 
-        val response = Retrofit.getWeather(cityname,"94dd04c9c1ac038d2ab02d0aa027385f","metric")
+        val response = Retrofit.getWeather(cityname, key,"metric")
         response.enqueue(object : Callback<weatherapp>{
             override fun onResponse(p0: Call<weatherapp>, p1: Response<weatherapp>) {
                 val responseBody = p1.body()
